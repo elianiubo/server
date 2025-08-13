@@ -1,6 +1,7 @@
 import express from "express";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+
 dotenv.config();
 
 const router = express.Router();
@@ -11,6 +12,7 @@ const router = express.Router();
 router.get("/admin", verifyToken, (req, res) => {
   res.json({ message: `Bienvenido, ${req.user.email}` });
 });
+
 router.post("/login", (req, res) => {
   const { email, password } = req.body;
 
