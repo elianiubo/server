@@ -6,13 +6,15 @@ dotenv.config();
 const router = express.Router();
 
 // ⚠️ Email/contraseña hardcoded para este ejemplo simple
-const ADMIN_EMAIL = "admin@ejemplo.com";
-const ADMIN_PASSWORD = "123456"; // En producción, usa bcrypt y una base de datos
-
+// const ADMIN_EMAIL = "admin@ejemplo.com";
+// const ADMIN_PASSWORD = "123456"; // En producción, usa bcrypt y una base de datos
+router.get("/admin", verifyToken, (req, res) => {
+  res.json({ message: `Bienvenido, ${req.user.email}` });
+});
 router.post("/login", (req, res) => {
   const { email, password } = req.body;
 
-  if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
+  if (email !== process.env.ADMIN_EMAIL || password !== process.env.ADMIN_PASSWORD) {
     return res.status(401).json({ error: "Credenciales incorrectas" });
   }
 
