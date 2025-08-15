@@ -14,20 +14,23 @@ const app = express();
 
 const allowedOrigins = [
   'http://localhost:5173',
-  /\.vercel\.app$/  // permite cualquier subdominio vercel.app
-];
+  /^https:\/\/.*\.vercel\.app$/,
+  /^https:\/\/.*\.mycustomdomain\.com$/
+];;
 
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin) return callback(null, true); // permite herramientas locales
-    if (allowedOrigins.some((allowed) =>
-      typeof allowed === "string"
-        ? allowed === origin
-        : allowed instanceof RegExp && allowed.test(origin)
-    )) {
-      return callback(null, true);
+    if (!origin) return callback(null, true); // allow local tools like Postman
+    if (
+      allowedOrigins.some((allowed) =>
+        typeof allowed === "string"
+          ? allowed === origin
+          : allowed instanceof RegExp && allowed.test(origin)
+      )
+    ) {
+      callback(null, true);
     } else {
-      return callback(new Error(`CORS bloqueado para origen: ${origin}`));
+      callback(new Error(`CORS bloqueado para origen: ${origin}`));
     }
   }
 }));
