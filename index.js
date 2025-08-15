@@ -19,18 +19,21 @@ const allowedOrigins = [
 ];;
 
 app.use(cors({
+  
   origin: (origin, callback) => {
-    if (!origin) return callback(null, true); // allow local tools like Postman
-    if (
-      allowedOrigins.some((allowed) =>
-        typeof allowed === "string"
-          ? allowed === origin
-          : allowed instanceof RegExp && allowed.test(origin)
-      )
-    ) {
-      callback(null, true);
+    console.log("CORS origin:", origin);
+    if (!origin) return callback(null, true); // allow Postman or curl
+
+    const isAllowed = allowedOrigins.some((allowed) =>
+      typeof allowed === "string"
+        ? allowed === origin
+        : allowed instanceof RegExp && allowed.test(origin)
+    );
+
+    if (isAllowed) {
+      callback(null, true); // ✅ habilitado
     } else {
-      callback(new Error(`CORS bloqueado para origen: ${origin}`));
+      callback(null, false); // ❌ bloqueado, pero no rompe la app
     }
   }
 }));
