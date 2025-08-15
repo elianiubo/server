@@ -41,7 +41,7 @@ router.post(
 
             try {
               await pool.query(
-                "INSERT INTO images (url, category, public_id) VALUES ($1, $2, $3, $4)",
+                "INSERT INTO images (url, category, public_id) VALUES ($1, $2, $3)",
                 [
                   result.original_filename,
                   result.secure_url,
