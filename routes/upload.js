@@ -9,7 +9,7 @@ const router = Router();
 const upload = multer({ storage: multer.diskStorage({}) }); // temp files on disk
 
 // ✅ Aceptar múltiples imágenes
-router.post( "/api/upload-multiple",verifyToken,upload.array("images"),async (req, res) => {
+router.post("/api/upload-multiple", verifyToken, upload.array("images"), async (req, res) => {
   //   const rawCategory = req.body.category;
   //   const category = rawCategory?.trim();
 
@@ -68,7 +68,7 @@ router.post( "/api/upload-multiple",verifyToken,upload.array("images"),async (re
   //     res.status(500).json({ error: "Error al subir imágenes" });
   //   }
   // }
-   try {
+  try {
     const results = [];
     for (const file of req.files) {
       const result = await new Promise((resolve, reject) => {
@@ -79,11 +79,13 @@ router.post( "/api/upload-multiple",verifyToken,upload.array("images"),async (re
       });
 
       await pool.query(
-        "INSERT INTO images (title, url, category, public_id) VALUES ($1, $2, $3, $4)",
-        [result.original_filename, result.secure_url, req.body.category.trim(), result.public_id]
+        "INSERT INTO images (url, category, public_id) VALUES ($1, $2, $3)",
+        [
+          result.secure_url,
+          category,
+          result.public_id,
+        ]
       );
-
-      results.push({ url: result.secure_url, public_id: result.public_id });
     }
     res.status(200).json({ message: "Imágenes subidas correctamente", images: results });
   } catch (err) {
