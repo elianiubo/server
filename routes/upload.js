@@ -6,7 +6,8 @@ import { verifyToken } from "../middleware/authMiddleware.js";
 import pool from "../config/db.js";
 
 const router = Router();
-const upload = multer({ storage: multer.memoryStorage() });
+const upload = multer({ storage: multer.memoryStorage() ,limits: { fileSize: 5 * 1024 * 1024 } },
+);
 
 // ✅ Aceptar múltiples imágenes
 router.post(
