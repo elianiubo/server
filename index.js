@@ -13,16 +13,15 @@ dotenv.config();
 const app = express();
 
 const allowedOrigins = [
-  'http://localhost:5173',
+  "http://localhost:5173",
   /^https:\/\/.*\.vercel\.app$/,
   /^https:\/\/.*\.mycustomdomain\.com$/
-];;
+];
 
 app.use(cors({
-  
   origin: (origin, callback) => {
-    console.log("CORS origin:", origin);
-    if (!origin) return callback(null, true); // allow Postman or curl
+    console.log("Incoming origin:", origin);
+    if (!origin) return callback(null, true); // allow Postman, curl, etc.
 
     const isAllowed = allowedOrigins.some((allowed) =>
       typeof allowed === "string"
@@ -31,11 +30,12 @@ app.use(cors({
     );
 
     if (isAllowed) {
-      callback(null, true); // ✅ habilitado
+      callback(null, true); // ✅ add CORS headers
     } else {
-      callback(null, false); // ❌ bloqueado, pero no rompe la app
+      callback(null, false); // ❌ no headers, request rejected by browser
     }
-  }
+  },
+  credentials: true // add this if you ever use cookies/auth headers
 }));
 app.use(express.json());
 app.use(authRoute);
