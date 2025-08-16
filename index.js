@@ -38,6 +38,11 @@ app.use(cors({
   credentials: true // add this if you ever use cookies/auth headers
 }));
 app.use(express.json());
+app.use((req, res, next) => {
+  console.log("Incoming origin:", req.headers.origin);
+  console.log("Request path:", req.path);
+  next();
+});
 app.use(authRoute);
 app.use(uploadRoute);
 app.use(imagesRoute);
