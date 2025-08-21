@@ -18,7 +18,7 @@ console.log("PASS:", process.env.EMAIL_PASS);
         
         service: 'gmail',
         auth: {
-            user: process.env.EMAIL_USER, // your@gmail.com
+            user: process.env.EMAIL_USER, // giacco.photo@gmail.com correo principal a cambiar
             pass: process.env.EMAIL_PASS, // App password or actual SMTP password
         },
         
