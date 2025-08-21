@@ -12,10 +12,16 @@ dotenv.config();
 
 const app = express();
 
+// const allowedOrigins = [
+//   "http://localhost:5173",
+//   /^https:\/\/.*\.vercel\.app$/,
+//   /^https:\/\/.*\.elianiubo\.com$/
+// ];
 const allowedOrigins = [
   "http://localhost:5173",
-  /^https:\/\/.*\.vercel\.app$/,
-  /^https:\/\/.*\.elianiubo\.com$/
+  "https://elianiubo.com",
+  "https://www.elianiubo.com",
+  /^https:\/\/.*\.vercel\.app$/
 ];
 
 app.use(cors({
