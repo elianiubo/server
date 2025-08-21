@@ -16,7 +16,17 @@ router.options("/api/upload-multiple", cors());
 router.post(
   "/api/upload-multiple",
   verifyToken,
-  upload.array("images"),
+  (req, res, next) => {
+    upload.array("images")(req, res, (err) => {
+      if (err) {
+        if (err.code === "LIMIT_FILE_SIZE") {
+          return res.status(413).json({ error: "Archivo demasiado grande (max 5MB)" });
+        }
+        return res.status(400).json({ error: `Error de subida: ${err.message}` });
+      }
+      next();
+    });
+  },
   async (req, res) => {
     const rawCategory = req.body.category;
     const category = rawCategory?.trim();
