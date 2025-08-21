@@ -52,10 +52,10 @@ app.use(cors({
 app.use(express.json());
 
 app.use(authRoute);
-app.use('/api', uploadRoute);
-app.use('/api', imagesRoute); 
-app.use('/api', contactRoute);
-app.use('/api', variablesRoute);
+app.use(uploadRoute);
+app.use(imagesRoute);
+app.use(contactRoute)
+app.use(variablesRoute)
 app.get("/", (req, res) => {
   res.send("Servidor OK");
 });
