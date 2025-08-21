@@ -8,21 +8,26 @@ import imagesRoute from "./routes/images.js"; // ajusta el path correcto
 import contactRoute from "./routes/contact.js"; // ajusta el path correcto
 import variablesRoute from "./routes/variables.js"; // ajusta el path correcto
 import dotenv from 'dotenv';
+import { Router } from "express";
 dotenv.config();
 
 const app = express();
+const router = Router();
 
 // const allowedOrigins = [
 //   "http://localhost:5173",
 //   /^https:\/\/.*\.vercel\.app$/,
 //   /^https:\/\/.*\.elianiubo\.com$/
 // ];
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://elianiubo.com",
-  "https://www.elianiubo.com",
-  /^https:\/\/.*\.vercel\.app$/
-];
+const corsOptions = {
+  origin: [
+    "http://localhost:5173",
+    "https://elianiubo.com",
+    "https://www.elianiubo.com"
+  ],
+  credentials: true,
+};
+router.options("/api/upload-multiple", cors(corsOptions)); // preflight
 // Configuración CORS simplificada y corregida
 app.use(cors({
   origin: (origin, callback) => {

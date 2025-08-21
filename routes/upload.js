@@ -9,13 +9,21 @@ import pool from "../config/db.js";
 const router = Router();
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } },
 );
+const corsOptions = {
+  origin: [
+    "http://localhost:5173",
+    "https://elianiubo.com",
+    "https://www.elianiubo.com"
+  ],
+  credentials: true,
+};
 // Preflight específico para esta ruta (por si algún middleware bloquea OPTIONS)
 router.options("/api/upload-multiple", cors());
 
 // POST /api/upload-multiple
-// POST /api/upload-multiple
 router.post(
   "/upload-multiple",
+  cors(corsOptions), // ✅ AÑADE ESTO AQUÍ
   verifyToken,
   (req, res, next) => {
     upload.array("images", 4)(req, res, (err) => {
