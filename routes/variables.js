@@ -5,6 +5,7 @@ import { verifyToken } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
+
 router.get("/api/variables/:id", async (req, res) => {
   const { id } = req.params; // get id from URL
   try {
