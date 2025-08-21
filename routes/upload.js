@@ -13,38 +13,48 @@ const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 *
 router.options("/api/upload-multiple", cors());
 
 // POST /api/upload-multiple
+// POST /api/upload-multiple
 router.post(
-  "/api/upload-multiple",
+  "/upload-multiple",
   verifyToken,
   (req, res, next) => {
-    upload.array("images")(req, res, (err) => {
+    upload.array("images", 4)(req, res, (err) => {
       if (err) {
+        console.error("Error de multer:", err);
         if (err.code === "LIMIT_FILE_SIZE") {
-          return res.status(413).json({ error: "Archivo demasiado grande (max 5MB)" });
+          return res.status(413).json({ 
+            error: "Archivo demasiado grande (máximo 5MB por imagen)" 
+          });
         }
-        return res.status(400).json({ error: `Error de subida: ${err.message}` });
+        if (err.code === "LIMIT_FILE_COUNT") {
+          return res.status(413).json({ 
+            error: "Demasiados archivos (máximo 4 imágenes)" 
+          });
+        }
+        return res.status(400).json({ 
+          error: `Error de subida: ${err.message}` 
+        });
       }
       next();
     });
   },
   async (req, res) => {
-    const rawCategory = req.body.category;
-    const category = rawCategory?.trim();
-
-    if (!category) {
-      return res.status(400).json({ error: "Categoría no válida" });
-    }
-
-    const files = req.files;
-    if (!files || files.length === 0) {
-      return res.status(400).json({ error: "No se recibieron archivos" });
-    }
-    if (files.length > 4) {
-      return res.status(400).json({ error: "Máximo 4 imágenes permitidas" });
-    }
-
     try {
-      // Re-sincroniza la secuencia (si usas PostgreSQL con SERIAL/IDENTITY)
+      const rawCategory = req.body.category;
+      const category = rawCategory?.trim();
+
+      if (!category) {
+        return res.status(400).json({ error: "Categoría requerida" });
+      }
+
+      const files = req.files;
+      if (!files || files.length === 0) {
+        return res.status(400).json({ error: "No se recibieron archivos" });
+      }
+
+      console.log(`Procesando ${files.length} archivos para categoría: ${category}`);
+
+      // Re-sincronizar secuencia de PostgreSQL
       await pool.query(`
         SELECT setval(
           'images_id_seq',
@@ -53,13 +63,25 @@ router.post(
         )
       `);
 
-      const uploadImage = (file) =>
+      const uploadImage = (file, index) =>
         new Promise((resolve, reject) => {
+          console.log(`Subiendo imagen ${index + 1}/${files.length}`);
+          
           const stream = cloudinary.uploader.upload_stream(
-            { folder: category },
+            { 
+              folder: category,
+              resource_type: "image",
+              quality: "auto:good",
+              fetch_format: "auto"
+            },
             async (error, result) => {
-              if (error) return reject(error);
+              if (error) {
+                console.error(`Error al subir imagen ${index + 1}:`, error);
+                return reject(error);
+              }
+              
               try {
+                console.log(`Guardando en BD imagen ${index + 1}: ${result.secure_url}`);
                 await pool.query(
                   "INSERT INTO images (url, category, public_id) VALUES ($1, $2, $3)",
                   [result.secure_url, category, result.public_id]
@@ -69,6 +91,7 @@ router.post(
                   public_id: result.public_id
                 });
               } catch (dbErr) {
+                console.error(`Error BD para imagen ${index + 1}:`, dbErr);
                 reject(dbErr);
               }
             }
@@ -76,14 +99,24 @@ router.post(
           stream.end(file.buffer);
         });
 
-      const results = await Promise.all(files.map(uploadImage));
+      const results = await Promise.all(
+        files.map((file, index) => uploadImage(file, index))
+      );
+
+      console.log(`✅ ${results.length} imágenes subidas exitosamente`);
+
       res.status(200).json({
-        message: "Imágenes subidas correctamente",
+        success: true,
+        message: `${results.length} imágenes subidas correctamente`,
         images: results
       });
+
     } catch (err) {
       console.error("❌ Error al subir imágenes:", err);
-      res.status(500).json({ error: "Error al subir imágenes" });
+      res.status(500).json({ 
+        error: "Error interno al procesar las imágenes",
+        details: process.env.NODE_ENV === 'development' ? err.message : undefined
+      });
     }
   }
 );

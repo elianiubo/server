@@ -23,53 +23,52 @@ const allowedOrigins = [
   "https://www.elianiubo.com",
   /^https:\/\/.*\.vercel\.app$/
 ];
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  const allowed = allowedOrigins.some(a =>
-    typeof a === "string" ? a === origin : a.test(origin)
-  );
-  if (allowed) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
-    res.setHeader("Vary", "Origin");
-    res.setHeader("Access-Control-Allow-Credentials", "true");
-    res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  }
-  // Atender preflight aquí mismo
-  if (req.method === "OPTIONS") return res.sendStatus(204);
-  next();
-});
-
+// Configuración CORS simplificada y corregida
 app.use(cors({
   origin: (origin, callback) => {
     console.log("Incoming origin:", origin);
-    if (!origin) return callback(null, true); // allow Postman, curl, etc.
-
+    // Permitir requests sin origin (Postman, curl, etc.)
+    if (!origin) return callback(null, true);
+    
     const isAllowed = allowedOrigins.some((allowed) =>
       typeof allowed === "string"
         ? allowed === origin
         : allowed instanceof RegExp && allowed.test(origin)
     );
-
+    
     if (isAllowed) {
-      callback(null, true); // ✅ add CORS headers
+      callback(null, true);
     } else {
-      callback(null, false); // ❌ no headers, request rejected by browser
+      console.log("Origin not allowed:", origin);
+      callback(new Error('Not allowed by CORS'));
     }
   },
-  credentials: true // add this if you ever use cookies/auth headers
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 200 // Para navegadores legacy
 }));
+
 app.use(express.json());
 
 app.use(authRoute);
-app.use(uploadRoute);
-app.use(imagesRoute);
-app.use(contactRoute)
-app.use(variablesRoute)
+app.use('/api', uploadRoute);
+app.use('/api', imagesRoute); 
+app.use('/api', contactRoute);
+app.use('/api', variablesRoute);
 app.get("/", (req, res) => {
   res.send("Servidor OK");
 });
 
+
+// Middleware de manejo de errores
+app.use((err, req, res, next) => {
+  console.error('Error:', err);
+  if (err.message === 'Not allowed by CORS') {
+    return res.status(403).json({ error: 'CORS: Origin not allowed' });
+  }
+  res.status(500).json({ error: 'Error interno del servidor' });
+});
 
 
 const PORT = process.env.PORT || 5000;
