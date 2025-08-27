@@ -7,6 +7,8 @@ import authRoute from "./routes/authRoutes.js";
 import imagesRoute from "./routes/images.js"; // ajusta el path correcto
 import contactRoute from "./routes/contact.js"; // ajusta el path correcto
 import variablesRoute from "./routes/variables.js"; // ajusta el path correcto
+import healthRoute from "./routes/health.js"; 
+
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -19,8 +21,8 @@ const app = express();
 // ];
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://elianiubo.com",
-  "https://www.elianiubo.com",
+  "https://giacco.co",
+  "https://www.giacco.co",
   // /^https:\/\/.*\.vercel\.app$/
 ];
 
@@ -54,6 +56,7 @@ app.use(uploadRoute);
 app.use(imagesRoute);
 app.use(contactRoute)
 app.use(variablesRoute)
+app.use(healthRoute)
 app.get("/", (req, res) => {
   res.send("Servidor OK");
 });
