@@ -6,7 +6,7 @@ dotenv.config();
 const router = express.Router();
 
 // ⚠️ Email/contraseña hardcoded para este ejemplo simple
-const ADMIN_EMAIL = "admin@ejemplo.com";
+const ADMIN_EMAIL = "giacco.photo@gmail.com";
 const ADMIN_PASSWORD = "123456"; // En producción, usa bcrypt y una base de datos
 
 router.post("/login", (req, res) => {
@@ -21,4 +21,3 @@ router.post("/login", (req, res) => {
 });
 
 export default router;
-//https://client-01-git-master-elianiubos-projects.vercel.app

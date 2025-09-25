@@ -1,7 +1,6 @@
 import express from "express";
 import pool from "../config/db.js"; // Asegúrate de que la ruta sea correcta
 import cloudinary from "../config/cloudinary.js";
-import { verifyToken } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
