@@ -1,7 +1,6 @@
 // routes/upload.js  (MISMO PATH QUE TENÍAS, sin verifyToken)
 import { Router } from "express";
 import multer from "multer";
-import cloudinary from "../config/cloudinary.js";
 import pool from "../config/db.js";
 
 const router = Router();
@@ -10,7 +9,7 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 },
 });
 
-router.post("/api/guardar-url", async (req, res) => {
+router.post("/guardar-url", async (req, res) => {
   const { url, category, public_id } = req.body;
 
   if (!url || !category || !public_id) {

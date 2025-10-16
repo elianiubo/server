@@ -19,6 +19,7 @@ const allowedOrigins = [
   "http://localhost:5173",
   "https://giacco.co",
   "https://www.giacco.co",
+  "https://www.api.giacco.co",
 ];
 
 app.use(helmet());
@@ -53,10 +54,9 @@ app.use((req, res, next) => {
   next();
 });
 // ---------- PUBLIC ROUTES ----------
-app.use(imagesRoute);
-app.use(contactRoute);
-app.use(authRoute);
-app.use(variablesRoute);
+app.use(imagesRoute);  // /api/images, /api/image-categories
+app.use(authRoute); // /login, /auth/me
+app.use(variablesRoute); // /api/variables/:id
 
 // ---------- ADMIN ROUTES (protected) ----------
 app.use("/admin", requireAuth, uploadRoute);

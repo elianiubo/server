@@ -5,7 +5,7 @@ const { Pool } = pg;
 
 // En dev usarás la URL pública de Railway (proxy.rlwy.net); en prod, la propia de Railway (sin tocar código)
 const connectionString =
-  process.env.DATABASE_URL || process.env.DATABASE_URL_PRIVADA;
+  process.env.DATABASE_URL || process.env.DATABASE_URL_PG;
 
 if (!connectionString) {
   throw new Error("DATABASE_URL no está definido");
