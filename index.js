@@ -20,9 +20,6 @@ const allowedOrigins = [
   "https://giacco.co",
   "https://www.giacco.co",
   "https://www.api.giacco.co",
-  "https:client-01-git-dbfixes-elianiubos-projects.vercel.app",
-  /https:\/\/.*\.giacco\.co$/, // subdominios
-   'http://localhost:5173',
 ];
 
 app.use(helmet());
