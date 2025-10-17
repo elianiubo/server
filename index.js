@@ -22,6 +22,8 @@ const allowedOrigins = [
   "https://www.api.giacco.co",
   "client-01-git-dbfixes-elianiubos-projects.vercel.app",
   /https:\/\/.*\.giacco\.co$/, // subdominios
+   'http://localhost:5173',
+  /\.vercel\.app$/
 ];
 
 app.use(helmet());
