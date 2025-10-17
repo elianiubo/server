@@ -19,7 +19,6 @@ const allowedOrigins = [
   "http://localhost:5173",
   "https://giacco.co",
   "https://www.giacco.co",
-  "https://www.api.giacco.co",
 ];
 
 app.use(helmet());
