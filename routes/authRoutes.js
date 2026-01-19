@@ -8,7 +8,7 @@ const router = express.Router();
 
 // ⚠️ Email/contraseña hardcoded para este ejemplo simple
 const ADMIN_EMAIL = "giacco.photo@gmail.com";
-const ADMIN_PASSWORD = "123456"; // En producción, usa bcrypt y una base de datos
+const ADMIN_PASSWORD = "ncrgmr86s22c495s"; // En producción, usa bcrypt y una base de datos
 
 router.post("/login", (req, res) => {
   const { email, password } = req.body;
