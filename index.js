@@ -5,6 +5,7 @@ import uploadRoute from "./routes/upload.js";
 import authRoute from "./routes/authRoutes.js";
 import imagesRoute from "./routes/images.js";
 import contactRoute from "./routes/contact.js";
+import adminRoutes from "./routes/admin.js"; 
 import variablesRoute from "./routes/variables.js";
 import requireAuth from "./middleware/authMiddleware.js";
 import helmet from "helmet";
@@ -60,6 +61,7 @@ app.use(variablesRoute); // /api/variables/:id
 // ---------- ADMIN ROUTES (protected) ----------
 app.use("/admin", requireAuth, uploadRoute);
 // app.use("/admin", requireAuth, variablesRoute);
+app.use("/admin", adminRoutes); // /admin/images CRUD
 
 app.get("/", (req, res) => {
   res.send("Servidor OK");
