@@ -57,7 +57,7 @@ app.use((req, res, next) => {
 app.use(imagesRoute);  // /api/images, /api/image-categories
 app.use(authRoute); // /login, /auth/me
 app.use(variablesRoute); // /api/variables/:id
-
+app.use(contactRoute);
 // ---------- ADMIN ROUTES (protected) ----------
 app.use("/admin", requireAuth, uploadRoute);
 // app.use("/admin", requireAuth, variablesRoute);
